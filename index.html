@@ -1,0 +1,128 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajer R2 Cloudflare (1 Worker)</title>
+    <!-- Link ke CSS buatan sendiri -->
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome untuk Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header>
+            <h1>R2 Manager</h1>
+            <button onclick="loadFiles()" class="refresh-btn" title="Refresh Daftar File">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </header>
+
+        <!-- Aksi & Filtering Section -->
+        <div class="action-section">
+            
+            <!-- 1. Pemilihan Bucket -->
+            <div class="action-group">
+                <label for="bucketSelector" class="label-title">Pilih Bucket:</label>
+                <select id="bucketSelector" onchange="switchBucket()">
+                    <!-- Opsi akan diisi oleh app.js -->
+                </select>
+            </div>
+
+            <!-- 2. Kolom Pencarian -->
+            <div class="action-group">
+                <label for="searchInput" class="label-title">Cari File:</label>
+                <div class="input-group">
+                    <input type="text" id="searchInput" placeholder="Ketik nama file..." onkeyup="filterFiles()" class="text-input" />
+                    <button onclick="document.getElementById('searchInput').value = ''; filterFiles();" class="btn-icon btn-reset" title="Hapus Pencarian">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Upload Area -->
+        <div class="upload-section">
+            <label class="label-title">Upload File Baru</label>
+            <div class="input-group">
+                <input type="file" id="fileInput" />
+                <button onclick="uploadFile()" id="uploadBtn" class="btn-primary" title="Mulai Upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </button>
+            </div>
+            <p id="status" class="status-msg">Sedang memproses...</p>
+        </div>
+
+        <!-- List Area -->
+        <div class="file-list-container">
+            <h2 class="section-title">Daftar File</h2>
+            <div id="fileList">
+                <!-- Javascript akan mengisi ini -->
+                <div class="loading">Memuat data...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Status Upload -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Proses Upload</h3>
+            </div>
+            <div class="modal-body">
+                <div id="modalSpinner" class="spinner"><i class="fas fa-spinner fa-spin"></i></div>
+                <p id="modalMessage">Mengirim file ke R2...</p>
+                <p id="modalFileName" class="file-name-modal"></p>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modalCloseBtn" onclick="document.getElementById('uploadModal').style.display='none';" class="btn-secondary" style="display:none;">Tutup</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Konfirmasi HAPUS -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Konfirmasi Penghapusan</h3>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <p>Apakah Anda yakin ingin menghapus file:</p>
+                <p id="deleteFileName" style="font-weight: 600; margin-top: 5px;"></p>
+                <p style="margin-top: 10px; font-size: 12px; color: var(--danger-color);">Tindakan ini tidak dapat dibatalkan.</p>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button onclick="document.getElementById('deleteConfirmModal').style.display='none';" class="btn-secondary">Batal</button>
+                <button id="confirmDeleteBtn" class="btn-delete-modal">Hapus</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Preview Video BARU -->
+    <div id="videoPreviewModal" class="modal">
+        <div class="modal-content video-modal-content">
+            <div class="modal-header">
+                <h3 id="videoTitle"></h3>
+                <button class="close-btn" onclick="closeVideoPreview()">&times;</button>
+            </div>
+            <div class="modal-body video-container">
+                <!-- Pemutar video akan ditempatkan di sini -->
+                <video id="videoPlayer" controls autoplay muted playsinline></video>
+            </div>
+        </div>
+    </div>
+    <!-- END Modal Preview Video BARU -->
+
+    <!-- Script Logic -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
